@@ -11,7 +11,7 @@ setup(
             'dsb=docstruct_builder:main',
         ],
     },
-    name='seminar_recorder',
+    name='docstruct_builder',
     version='0.10',
     packages=['docstruct_builder'],
     author_email = "stanislav.fomin@gmail.com",

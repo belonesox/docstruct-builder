@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
   222
 """
+from __future__ import print_function
 import sys
 import os
 import optparse
@@ -53,7 +54,7 @@ class DocstructBuilder(object):
         self.target = self.target.replace('\\', '/')
         
         self.basedir = None 
-        for k in xrange(1, len(parts)):
+        for k in range(1, len(parts)):
             path_to_test = os.path.sep.join(parts[:-k])
             if os.path.exists(os.path.join(path_to_test, 'SConstruct')):
                 self.basedir = path_to_test
@@ -84,12 +85,12 @@ class DocstructBuilder(object):
         except docker.errors.APIError as ex_:
             pass
 
-        print "***", self.mount_point, "---"
+        print("***", self.mount_point, "---")
         if need_creation:
             #exec docker run -d --rm --name latex_daemon -i --user="$(id -u):$(id -g)" --net=none -t -v $PWD:/data "$IMAGE" /bin/sh -c "sleep infinity"
             port_mapping = {'22/tcp': self.port}
             volume_mapping = {self.basedir: {'bind': self.mount_point, 'mode': 'rw'}}
-            print volume_mapping
+            print(volume_mapping)
             container = client.containers.run('belonesox/docstruct-centos',
                                               'sleep infinity',
                                               name=self.container_name,
@@ -102,8 +103,8 @@ class DocstructBuilder(object):
                                               )
             pass
         # scmd = 'scons -D "%s"' % self.target
-        scmd = 'bash -c "pwd; cd %s; scons -D %s "' % (self.mount_point, self.target)
-        scmd = 'bash -c "pwd; cd %s; ls -la . "' % (self.mount_point, )
+        scmd = 'bash -c "pwd; cd %s; scons -D %s "' % (self.mount_point, self.target_filename)
+        # scmd = 'bash -c "pwd; cd %s; ls -la . "' % (self.mount_point, )
         (res, output) = container.exec_run(scmd,
                            stdout=True,
                            stderr=True,
@@ -116,7 +117,7 @@ class DocstructBuilder(object):
                            environment=None,
                            workdir=self.mount_point
                            )
-        print output
+        print(str(output).replace('\\n', '\n'))
         pass
 
 
