@@ -10,7 +10,9 @@ import optparse
 import time
 import shutil
 import docker
-import belonesox_tools.MiscUtils as ut    
+import belonesox_tools.MiscUtils as ut   
+import platform
+
 #import MiscUtils as ut
 
 import socket
@@ -43,8 +45,15 @@ class DocstructBuilder(object):
         #
         #self.options, self.args = self.parser.parse_args()
         self.homedir = os.getcwd()
+
         self.uid = 0 #os.getuid()
         self.gid = 0 #os.getgid()
+
+        if platform.system() != 'Windows':
+            self.uid = os.getuid()
+            self.gid = os.getgid()
+        # print("self.uid=",  self.uid)
+
         self.port = find_free_port()
         self.target = '/home/stas/projects/lectures-cs/algorithms/simple/intro-and-samples.beam.pdf'
         if len(sys.argv) > 1:
@@ -97,7 +106,7 @@ class DocstructBuilder(object):
                                               remove=True,
                                               ports=port_mapping,
                                               volumes=volume_mapping,
-                                              # user=self.uid,
+                                              user=self.uid, #!!! для винды.
                                               entrypoint=None,
                                               detach=True
                                               )
@@ -117,7 +126,10 @@ class DocstructBuilder(object):
                            environment=None,
                            workdir=self.mount_point
                            )
-        print(str(output).replace('\\n', '\n'))
+
+        out = str(output).replace('\\n', '\n')
+        out = out.replace('--->!!--->', '')
+        print(out)
         pass
 
 
