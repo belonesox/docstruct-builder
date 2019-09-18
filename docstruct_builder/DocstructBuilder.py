@@ -128,6 +128,8 @@ class DocstructBuilder(object):
                            )
 
         out = str(output).replace('\\n', '\n')
+        out = out.replace(" " + self.basedir+'/', self.basedir+'/')
+        out = out.replace('--->!!---> ', '')
         out = out.replace('--->!!--->', '')
         print(out)
         pass
